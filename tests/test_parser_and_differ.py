@@ -85,6 +85,27 @@ class TestDiffEnvs:
         assert result.changed == {}
         assert sorted(result.unchanged) == sorted(self.BASE.keys())
 
-    def test_empty_envs(self):
+    def test_empty_base(self):
+        """All keys in target should appear as added when base is empty."""
+        result = diff_envs({}, self.TARGET)
+        assert result.added == self.TARGET
+        assert result.removed == {}
+        assert result.changed == {}
+        assert result.unchanged == {}
+
+    def test_empty_target(self):
+        """All keys in base should appear as removed when target is empty."""
+        result = diff_envs(self.BASE, {})
+        assert result.added == {}
+        assert result.removed == self.BASE
+        assert result.changed == {}
+        assert result.unchanged == {}
+
+    def test_both_empty(self):
+        """Diffing two empty envs should produce an empty result with no differences."""
         result = diff_envs({}, {})
-        assert not result.has_differences
+        assert result.added == {}
+        assert result.removed == {}
+        assert result.changed == {}
+        assert result.unchanged == {}
+        assert result.has_differences is False
